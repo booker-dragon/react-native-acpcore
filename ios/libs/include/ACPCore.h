@@ -4,7 +4,7 @@
 //
 //  Copyright 1996-2019. Adobe. All Rights Reserved
 //
-//  Core Version: 2.2.1
+//  Core Version: 2.3.3
 
 #import <Foundation/Foundation.h>
 
@@ -122,7 +122,10 @@ typedef NS_ENUM(NSUInteger, ACPMobileWrapperType) {
  *
  * @param callback a method that has an string param containing a url, which return YES if it will handle the provided url, NO continue to open url.
  */
+#if !TARGET_OS_WATCH
 + (void) registerURLHandler: (nonnull BOOL (^) (NSString* __nullable url)) callback;
+#endif
+
 /**
  * @brief Get the current Adobe Mobile Privacy Status
  *
@@ -350,6 +353,23 @@ typedef NS_ENUM(NSUInteger, ACPMobileWrapperType) {
  * @param userInfo Dictionary of data relevant to the expected use case
  */
 + (void) collectLaunchInfo: (nonnull NSDictionary*) userInfo;
+
+/**
+ * @brief Provide message info to the SDK from various points in your application.
+ *
+ * This method should be called to support the following use cases:
+ *
+ *  1. Tracking remote or local notification receive
+ *     - call from userNotificationCenter:willPresentNotification:withCompletionHandler:
+ *
+ *  2. Tracking remote or local notification click-throughs
+ *     - call from userNotificationCenter:didReceiveNotificationResponse:withCompletionHandler:
+ *
+ * For scenarios where the app is launched as a result of notification click, use ACPCore::collectLaunchInfo:
+ *
+ * @param messageInfo Dictionary of data relevant to the expected use case
+ */
++ (void) collectMessageInfo: (nonnull NSDictionary*) messageInfo;
 
 #pragma mark - Rules Engine
 

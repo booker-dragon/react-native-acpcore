@@ -1,11 +1,14 @@
 # React Native AEP Core Extension
 
+[![npm version](https://badge.fury.io/js/%40adobe%2Freact-native-acpcore.svg)](https://badge.fury.io/js/%40adobe%2Freact-native-acpcore) [![CircleCI](https://img.shields.io/circleci/project/github/adobe/react-native-acpcore/master.svg?logo=circleci)](https://circleci.com/gh/adobe/workflows/react-native-acpcore) ![NPM](https://img.shields.io/npm/l/@adobe/react-native-acpcore.svg)
+
 `@adobe/react-native-acpcore` is a wrapper around the iOS and Android [AEP Core SDK](https://aep-sdks.gitbook.io/docs/using-mobile-extensions/mobile-core) to allow for integration with React Native applications. Functionality to enable the Core extension is provided entirely through JavaScript documented below.
 
 ## Contents
 - [Installation](#installation)
   - [Android](#31-android-project)
   - [iOS](#32-ios-project)
+- [Tests](#tests)
 - [Usage](#usage)
 	- [Core](#core)
 	- [Identity](#identity)
@@ -15,6 +18,8 @@
 ## Installation
 
 You need to install the SDK with [npm](https://www.npmjs.com/) and configure the native Android/iOS project in your react native project.
+
+> Note: If you are new to React Native we suggest you follow the [React Native Getting Started](<https://facebook.github.io/react-native/docs/getting-started.html>) page before continuing.
 
 ### 1. Create React Native project
 
@@ -29,6 +34,7 @@ react-native init MyReactApp
 Install and link the `@adobe/react-native-acpcore` package:
 
 ```bash
+cd MyReactApp
 npm install @adobe/react-native-acpcore
 react-native link @adobe/react-native-acpcore
 ```
@@ -37,7 +43,7 @@ react-native link @adobe/react-native-acpcore
 
 #### 3.1 Android project
 
-Navigate to `MainApplication.java` under `app/src/main/java/com/<project-name>/` and add a call to `MobileCore.setApplication(this)` inside of `onCreate()`.
+Navigate to `MainApplication.java` under `android/app/src/main/java/com/<project-name>/MainApplication.java` and add a call to `MobileCore.setApplication(this)` inside of `onCreate()`.
 
 ```java
 import com.adobe.marketing.mobile.MobileCore; // import MobileCore
@@ -62,12 +68,17 @@ In the Link Binary With Libraries section, click the + link and add the followin
 
 Note: If you plan to use the AEP SDK in your native iOS code you will need to import the appropriate headers with the following format: `#import <RCTACPCore/ACPCore.h>`
 
+## Tests
+This project contains jest unit tests which are contained in the `__tests__` directory, to run the tests locally:
+```
+make run-tests-locally
+```
 
 ## Usage
 ### [Core](https://aep-sdks.gitbook.io/docs/using-mobile-extensions/mobile-core)
 ##### Initializing the SDK:
 
-It is recommended to initialize the SDK in your native code inside your AppDelegate and MainApplication in iOS and Android respectively, however you can still initialize the SDK in Javascript.
+It is recommended to initialize the SDK via native code inside your AppDelegate and MainApplication in iOS and Android respectively. However, you can still initialize the SDK in Javascript.
 
 **iOS:**
 
@@ -93,6 +104,13 @@ It is recommended to initialize the SDK in your native code inside your AppDeleg
 **Android:**
 
 ```java
+// Import the SDK
+import com.adobe.marketing.mobile.MobileCore;
+import com.adobe.marketing.mobile.Identity;
+import com.adobe.marketing.mobile.Lifecycle;
+import com.adobe.marketing.mobile.Signal;
+import com.adobe.marketing.mobile.WrapperType;
+
 @Override
 public void onCreate() {
   //...
@@ -259,6 +277,12 @@ ACPCore.setAdvertisingIdentifier("adID");
 ACPIdentity.appendVisitorInfoForURL("test.com").then(urlWithVisitorData => console.log("AdobeExperienceSDK: VisitorData = " + urlWithVisitorData));
 ```
 
+##### Get visitor data as URL query parameter string:
+
+```javascript
+ACPIdentity.getUrlVariables().then(urlVariables => console.log("AdobeExperienceSDK: UrlVariables = " + urlVariables));
+```
+
 ##### Get Identifiers:
 
 ```javascript
@@ -283,6 +307,8 @@ var visitorId = new ACPVisitorID(idOrigin?: string, idType: string, id?: string,
 ```
 
 ### [Lifecycle](https://aep-sdks.gitbook.io/docs/using-mobile-extensions/mobile-core/lifecycle)
+
+> Note: Implementing Lifecycle via Javascript may lead to inaccurate Lifecycle metrics, therefore we recommend implementing Lifecycle in native Android and iOS code.
 
 ##### Getting the extension version:
 ```javascript

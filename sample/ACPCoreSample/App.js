@@ -47,6 +47,7 @@ export default class App extends Component<Props> {
         <Button title="ACPIdentity::syncIdentifiersWithAuthState()" onPress={this.syncIdentifiersWithAuthState}/>
         <Button title="ACPIdentity::syncIdentifier()" onPress={this.syncIdentifier}/>
         <Button title="ACPIdentity::appendVisitorInfoForURL()" onPress={this.appendVisitorInfoForURL}/>
+        <Button title="ACPIdentity::getUrlVariables()" onPress={this.getUrlVariables}/>
         <Button title="ACPIdentity::getIdentifiers()" onPress={this.getIdentifiers}/>
         <Button title="ACPIdentity::getExperienceCloudId()" onPress={this.getExperienceCloudId}/>
         </ScrollView>
@@ -55,16 +56,8 @@ export default class App extends Component<Props> {
   }
 
   initSDK() {
-    // console.log("AdobeExperienceSDK IMPORT: ACPCore = " + ACPCore);
-    // console.log("AdobeExperienceSDK IMPORT: ACPLifecycle = " + ACPLifecycle);
-    // console.log("AdobeExperienceSDK IMPORT: ACPSignal = " + ACPSignal);
-    // console.log("AdobeExperienceSDK IMPORT: ACPIdentity = " + ACPIdentity);
-    // console.log("AdobeExperienceSDK IMPORT: ACPMobileLogLevel = " + ACPMobileLogLevel);
-    // console.log("AdobeExperienceSDK IMPORT: ACPMobilePrivacyStatus = " + ACPMobilePrivacyStatus);
-    // console.log("AdobeExperienceSDK IMPORT: ACPMobileVisitorAuthenticationState = " + ACPMobileVisitorAuthenticationState);
-    // console.log("AdobeExperienceSDK IMPORT: ACPVisitorID = " + ACPVisitorID);
     ACPCore.setLogLevel(ACPMobileLogLevel.VERBOSE);
-    ACPCore.configureWithAppId("launch-EN1a68f9bc5b3c475b8c232adc3f8011fb");
+    ACPCore.configureWithAppId("yourAppId");
     ACPLifecycle.registerExtension();
     ACPIdentity.registerExtension();
     ACPSignal.registerExtension();
@@ -160,6 +153,10 @@ export default class App extends Component<Props> {
 
   appendVisitorInfoForURL() {
     ACPIdentity.appendVisitorInfoForURL("test.com").then(urlWithVisitorData => console.log("AdobeExperienceSDK: VisitorData = " + urlWithVisitorData));
+  }
+
+  getUrlVariables() {
+    ACPIdentity.getUrlVariables().then(urlVariables => console.log("AdobeExperienceSDK: UrlVariables = " + urlVariables));
   }
 
   getIdentifiers() {
